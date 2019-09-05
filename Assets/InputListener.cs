@@ -13,10 +13,13 @@ public class InputListener : MonoBehaviour
     private Thread listenerThread;
     private UdpClient client;
 
+    private IPEndPoint remoteEndpoint;
+
     // Start is called before the first frame update
     void Start()
     {
-        client = new UdpClient("127.0.0.1", 3333);
+        remoteEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3333);
+        client = new UdpClient(remoteEndpoint);
         //client.Client.ReceiveTimeout = 100;
 
         ThreadStart threadStarter = new ThreadStart(Listen);
@@ -29,8 +32,8 @@ public class InputListener : MonoBehaviour
         Debug.Log("UDP Listener started...");
         while (true) {
             try {
-                IPEndPoint remoteEndpoint = new IPEndPoint(IPAddress.Any, 3333);
                 byte[] receivedBytes = client.Receive(ref remoteEndpoint);
+                Debug.Log(receivedBytes);
 
                 string decoded = Encoding.UTF8.GetString(receivedBytes);
                 Debug.Log(decoded);
