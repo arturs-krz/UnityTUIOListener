@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Text;
 using UnityEngine;
+
+// Open Sound Control for .NET
+// Copyright (c) 2006, Yoshinori Kawasaki 
+using OSC.NET;
 
 public class InputListener : MonoBehaviour
 {
@@ -15,13 +18,18 @@ public class InputListener : MonoBehaviour
 
     private IPEndPoint remoteEndpoint;
 
+    public Dictionary<int, FingerInput> surfaceFingers = new Dictionary<int, FingerInput>();
+
+    public Dictionary<int, ObjectInput> surfaceObjects = new Dictionary<int, ObjectInput>();
+
     // Start is called before the first frame update
     void Start()
     {
+        // We will be listening to the Surface on localhost
         remoteEndpoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 3333);
         client = new UdpClient(remoteEndpoint);
-        //client.Client.ReceiveTimeout = 100;
 
+        // Run the listener on a separate thread...
         ThreadStart threadStarter = new ThreadStart(Listen);
         listenerThread = new Thread(threadStarter);
         listenerThread.IsBackground = true;
@@ -33,15 +41,55 @@ public class InputListener : MonoBehaviour
         while (true) {
             try {
                 byte[] receivedBytes = client.Receive(ref remoteEndpoint);
-                Debug.Log(receivedBytes);
-
-                string decoded = Encoding.UTF8.GetString(receivedBytes);
-                Debug.Log(decoded);
+                
+                if (receivedBytes.Length > 0) {
+                    OSCBundle packet = (OSCBundle)OSCPacket.Unpack(receivedBytes);
+                    
+                    foreach (OSCMessage msg in packet.Values) {
+                        if (msg.Address.Equals("/tuio/2Dobj")) {
+                            ProcessObjectMessage(msg);
+                        } else if (msg.Address.Equals("/tuio/2Dcur")) {
+                            ProcessCursorMessage(msg);
+                        }
+                        // there's also /tuio/2Dblb
+                        // but we don't really need it
+                    } 
+                }
 
             } catch (Exception error) {
                 Debug.LogError(error.ToString());
             }
         }
+    }
+
+    private void ProcessCursorMessage(OSCMessage msg) {
+        string msgType = msg.Values[0].ToString(); //   source / alive / set / fseq
+        
+        switch (msgType) {
+            case "alive":
+                Debug.Log("Alive");
+                for (int i = 1; i < msg.Values.Count; i++) {
+                    Debug.Log(msg.Values[i].ToString());
+                }
+                break;
+            case "set":
+                Debug.Log("Set");
+                int id = (int)msg.Values[0];
+                if (surfaceFingers.ContainsKey(id)) {
+
+                } else {
+                    
+                }
+
+                for (int i = 1; i < msg.Values.Count; i++) {
+                    Debug.Log(msg.Values[i].ToString());
+                }
+                break;
+        }
+    } 
+
+    private void ProcessObjectMessage(OSCMessage msg) {
+
     }
 
     void OnApplicationQuit() {
