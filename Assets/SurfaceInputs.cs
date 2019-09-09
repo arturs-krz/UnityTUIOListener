@@ -94,6 +94,7 @@ public class SurfaceInputs : MonoBehaviour
     }
 
     private void LogState() {
+        Debug.ClearDeveloperConsole();
         if (surfaceFingers.Count > 0) { 
             Debug.Log(surfaceFingers.Count + " fingers:");
             foreach (KeyValuePair<int, FingerInput> entry in surfaceFingers) {
@@ -114,7 +115,8 @@ public class SurfaceInputs : MonoBehaviour
         
         switch (msgType) {
             case "alive": {
-                foreach (int id in surfaceFingers.Keys) {
+                List<int> ids = new List<int>(surfaceFingers.Keys);
+                foreach (int id in ids) {
                     if (!msg.Values.Contains(id)) {
                         surfaceFingers.Remove(id);
                     }
@@ -151,7 +153,8 @@ public class SurfaceInputs : MonoBehaviour
         
         switch (msgType) {
             case "alive": {
-                foreach (int id in surfaceObjects.Keys) {
+                List<int> ids = new List<int>(surfaceObjects.Keys);
+                foreach (int id in ids) {
                     if (!msg.Values.Contains(id)) {
                         surfaceObjects.Remove(id);
                     }
