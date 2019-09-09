@@ -22,10 +22,19 @@ public class ObjectInput
 
     public float angularAcceleration { get; private set; }
 
-    ObjectInput(int id, int tagValue, Vector2 position, float orientation, Vector2 velocity, float acceleration, float angularVelocity, float angularAcceleration)
+    public ObjectInput(int id, int tagValue, Vector2 position, float orientation, Vector2 velocity, float acceleration, float angularVelocity, float angularAcceleration)
     {
         this.id = id;
         this.tagValue = tagValue;
+        this.position = position;
+        this.orientation = orientation;
+        this.velocity = velocity;
+        this.acceleration = acceleration;
+        this.angularVelocity = angularVelocity;
+        this.angularAcceleration = angularAcceleration;
+    }
+
+    public void UpdateProps(Vector2 position, float orientation, Vector2 velocity, float acceleration, float angularVelocity, float angularAcceleration) {
         this.position = position;
         this.orientation = orientation;
         this.velocity = velocity;

@@ -12,8 +12,14 @@ public class FingerInput {
     public Vector2 velocity { get; private set; }
     public float acceleration { get; private set; }
 
-    FingerInput(int id, Vector2 position, Vector2 velocity, float acceleration) {
+    public FingerInput(int id, Vector2 position, Vector2 velocity, float acceleration) {
         this.id = id;
+        this.position = position;
+        this.velocity = velocity;
+        this.acceleration = acceleration;
+    }
+
+    public void UpdateProps(Vector2 position, Vector2 velocity, float acceleration) {
         this.position = position;
         this.velocity = velocity;
         this.acceleration = acceleration;

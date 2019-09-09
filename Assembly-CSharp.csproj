@@ -54,11 +54,12 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\FingerInput.cs" />
-     <Compile Include="Assets\InputListener.cs" />
      <Compile Include="Assets\ObjectInput.cs" />
      <Compile Include="Assets\OSC\OSCBundle.cs" />
      <Compile Include="Assets\OSC\OSCMessage.cs" />
      <Compile Include="Assets\OSC\OSCPacket.cs" />
+     <Compile Include="Assets\SurfaceInputs.cs" />
+     <Compile Include="Assets\TestListener.cs" />
  <Reference Include="Unity.Timeline.Editor">
  <HintPath>/Users/arturs/KTH/AdvancedGraphicsAndInteraction/TUIO Listener/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
  </Reference>
