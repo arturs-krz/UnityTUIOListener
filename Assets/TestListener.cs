@@ -11,17 +11,18 @@ public class TestListener : MonoBehaviour
     }
 
     void OnTouchReceive(Dictionary<int, FingerInput> surfaceFingers, Dictionary<int, ObjectInput> surfaceObjects) {
+        Debug.ClearDeveloperConsole();
         if (surfaceFingers.Count > 0) { 
             Debug.Log(surfaceFingers.Count + " fingers:");
             foreach (KeyValuePair<int, FingerInput> entry in surfaceFingers) {
-                Debug.Log(entry.Key + " @ " + entry.Value.position.ToString());
+                Debug.Log(entry.Key + " @ " + entry.Value.position.x + ";" + entry.Value.position.y);
             }
         }
 
         if (surfaceObjects.Count > 0) {
             Debug.Log(surfaceObjects.Count + " objects:");
             foreach (KeyValuePair<int, ObjectInput> entry in surfaceObjects) {
-                Debug.Log(entry.Key + ", tag: " + entry.Value.tagValue + " @ " + entry.Value.position.ToString());
+                Debug.Log(entry.Key + ", tag: " + entry.Value.tagValue + " @ " + entry.Value.position.x + ";" + entry.Value.position.y);
             }
         }
     }

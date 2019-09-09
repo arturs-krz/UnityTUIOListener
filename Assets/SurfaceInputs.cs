@@ -39,6 +39,9 @@ public class SurfaceInputs : MonoBehaviour
 
     private Dictionary<int, ObjectInput> surfaceObjects;
 
+    private Queue<OSCBundle> packetQueue = new Queue<OSCBundle>();
+    private object queueLock = new object();
+
     void Start()
     {
         surfaceFingers = new Dictionary<int, FingerInput>();
@@ -71,20 +74,10 @@ public class SurfaceInputs : MonoBehaviour
                 byte[] receivedBytes = client.Receive(ref remoteEndpoint);
                 
                 if (receivedBytes.Length > 0) {
-                    OSCBundle packet = (OSCBundle)OSCPacket.Unpack(receivedBytes);
-                    
-                    foreach (OSCMessage msg in packet.Values) {
-                        if (msg.Address.Equals("/tuio/2Dobj")) {
-                            ProcessObjectMessage(msg);
-                        } else if (msg.Address.Equals("/tuio/2Dcur")) {
-                            ProcessCursorMessage(msg);
-                        }
-                        // there's also /tuio/2Dblb
-                        // but we don't really need it
+                    lock (queueLock) {
+                        OSCBundle packet = (OSCBundle)OSCPacket.Unpack(receivedBytes);
+                        packetQueue.Enqueue(packet);
                     }
-
-                    OnTouch(surfaceFingers, surfaceObjects);
-                    // LogState();
                 }
 
             } catch (Exception error) {
@@ -200,5 +193,23 @@ public class SurfaceInputs : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (packetQueue.Count > 0) {
+            lock (packetQueue) {
+                foreach (OSCBundle packet in packetQueue) {
+                    foreach (OSCMessage msg in packet.Values) {
+                        if (msg.Address.Equals("/tuio/2Dobj")) {
+                            ProcessObjectMessage(msg);
+                        } else if (msg.Address.Equals("/tuio/2Dcur")) {
+                            ProcessCursorMessage(msg);
+                        }
+                        // there's also /tuio/2Dblb
+                        // but we don't really need it
+                    }
+                }
+                packetQueue.Clear();    
+            }
+            OnTouch(surfaceFingers, surfaceObjects);
+            // LogState();
+        }
     }
 }
