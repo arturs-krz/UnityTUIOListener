@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class ViewManager : MonoBehaviour
 {
+    //List<int> puckList = new List<int>();
+
+    //public bool[] puckList = { true };
+
     // Start is called before the first frame update
     void Start()
     {
