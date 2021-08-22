@@ -53,17 +53,15 @@ public class TestListener : MonoBehaviour
             {
                 //Debug.Log(entry.Key + ", tag: " + entry.Value.tagValue + " @ " + entry.Value.position.x + ";" + entry.Value.position.y);
 
-
+                // Mapping the rotation and position into readable formats for transform manipulations
                 oSpin = -Map(0, 360, angleOutputMin, angleOutputMax, entry.Value.orientation);
                 xPos = Map(fromRx, toRx, 0, 1, entry.Value.position.x);
                 yPos = Map(toRy, fromRy, 0, 1, entry.Value.position.y);
 
-                //print("X " + xPos);
-                //print("Y " + yPos);
-                //print("rotation" + oSpin);
-
+                // Object ID starts from 1 but array values start from 0
                 objectID = entry.Value.tagValue - 1;
 
+                // Setting values into respective arrays
                 puckList[objectID] = true;
                 puckSpin[objectID] = oSpin;
                 puckXPos[objectID] = xPos;
@@ -76,6 +74,7 @@ public class TestListener : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // TESTS
         if (Input.GetKeyDown(KeyCode.A))
         {
             puckList[0] = true;
@@ -86,6 +85,7 @@ public class TestListener : MonoBehaviour
         }
     }
 
+    // Map fucntion for normalising the data from the tuio interface
     public float Map(float from, float to, float from2, float to2, float value)
     {
         if (value <= from2)
